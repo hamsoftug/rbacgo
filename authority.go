@@ -189,7 +189,7 @@ func (a *Authority) CheckRole(userID uint, roleName string) (bool, error) {
 // it accepts the user id as the first parameter
 // the permission as the second parameter
 // it returns an error if the permission is not present in the database
-func (a *Authority) CheckPermission(userID uint, permName string) (bool, error) {
+func (a *Authority) CheckPermission(userID string, permName string) (bool, error) {
 	// the user role
 	var userRoles []UserRole
 	res := a.DB.Where("user_id = ?", userID).Find(&userRoles)

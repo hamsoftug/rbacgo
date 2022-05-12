@@ -174,26 +174,26 @@ func TestAssignRole(t *testing.T) {
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole("1", "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
 
 	// double assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole("1", "role-a")
 	if err == nil {
 		t.Error("expecting an error when assign a role to user more than one time")
 	}
 
 	// assign a second role
 	auth.CreateRole("role-b")
-	err = auth.AssignRole(1, "role-b")
+	err = auth.AssignRole("1", "role-b")
 	if err != nil {
 		t.Error("un expected error when assigning a second role. ", err)
 	}
 
 	// assign missing role
-	err = auth.AssignRole(1, "role-aa")
+	err = auth.AssignRole("1", "role-aa")
 	if err == nil {
 		t.Error("expecting an error when assigning role to a user")
 	}
@@ -224,7 +224,7 @@ func TestCheckRole(t *testing.T) {
 		t.Error("unexpected error while creating role to be assigned.", err)
 	}
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole("1", "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
@@ -286,7 +286,7 @@ func TestCheckPermission(t *testing.T) {
 	}
 
 	// test when no role is a ssigned
-	ok, err := auth.CheckPermission(1, "permission-a")
+	ok, err := auth.CheckPermission("1", "permission-a")
 	if err != nil {
 		t.Error("expecting error to be nil when no role is assigned")
 	}
@@ -295,13 +295,13 @@ func TestCheckPermission(t *testing.T) {
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole("1", "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
 
 	// test a permission of an assigned role
-	ok, err = auth.CheckPermission(1, "permission-a")
+	ok, err = auth.CheckPermission("1", "permission-a")
 	if err != nil {
 		t.Error("unexpected error while checking permission of a user.", err)
 	}
@@ -310,20 +310,23 @@ func TestCheckPermission(t *testing.T) {
 	}
 
 	// check when user does not have roles
-	ok, _ = auth.CheckPermission(111, "permission-a")
+	ok, _ = auth.CheckPermission("111", "permission-a")
 	if ok {
 		t.Error("expecting an false when checking permission of not assigned  user")
 	}
 
 	// test assigning missing permission
-	_, err = auth.CheckPermission(1, "permission-aa")
+	_, err = auth.CheckPermission("1", "permission-aa")
 	if err == nil {
 		t.Error("expecting an error when checking a missing permission")
 	}
 
 	// check for an exist but not assigned permission
-	auth.CreatePermission("permission-c")
-	ok, _ = auth.CheckPermission(1, "permission-c")
+	err = auth.CreatePermission("permission-c")
+	if err != nil {
+		t.Error("Failed to create permissions")
+	}
+	ok, _ = auth.CheckPermission("1", "permission-c")
 	if ok {
 		t.Error("expecting false when checking for not assigned permissions")
 	}
@@ -418,7 +421,7 @@ func TestRevokeRole(t *testing.T) {
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole("1", "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
@@ -474,7 +477,7 @@ func TestRevokePermission(t *testing.T) {
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole("1", "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
@@ -643,7 +646,7 @@ func TestDeleteRole(t *testing.T) {
 	}
 
 	// test delete an assigned role
-	auth.AssignRole(1, "role-a")
+	auth.AssignRole("1", "role-a")
 	err = auth.DeleteRole("role-a")
 	if err == nil {
 		t.Error("expecting an error when deleting an assigned role")
@@ -715,8 +718,8 @@ func TestGetUserRoles(t *testing.T) {
 	// first create a role
 	auth.CreateRole("role-a")
 	auth.CreateRole("role-b")
-	auth.AssignRole(1, "role-a")
-	auth.AssignRole(1, "role-b")
+	auth.AssignRole("1", "role-a")
+	auth.AssignRole("1", "role-b")
 
 	roles, _ := auth.GetUserRoles(1)
 	if len(roles) != 2 {
