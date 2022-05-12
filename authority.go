@@ -133,7 +133,7 @@ func (a *Authority) AssignPermissions(roleName string, permNames []string) error
 // the first parameter is the user id, the second parameter is the role name
 // if the role name doesn't have a matching record in the data base an error is returned
 // if the user have already a role assigned to him an error is returned
-func (a *Authority) AssignRole(userID uint, roleName string) error {
+func (a *Authority) AssignRole(userID string, roleName string) error {
 	// make sure the role exist
 	var role Role
 	res := a.DB.Where("name = ?", roleName).First(&role)
